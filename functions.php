@@ -14,9 +14,9 @@ function storeMessage($name, $email, $rating, $message) {
         return "Rating must be a number between 1 and 5.";
     }
 
-   // if (mb_strlen(trim($message), 'UTF-8') < 15) {
-   //     return "Message must be at least 15 characters long.";
-   // }
+    if (mb_strlen(trim($message), 'UTF-8') < 15) {
+        return "Message must be at least 15 characters long.";
+    }
 
     $maskedEmail = maskEmail($email);
     $maskedName = maskName($name);
