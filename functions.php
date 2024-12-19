@@ -18,12 +18,16 @@ function storeMessage($name, $email, $rating, $message) {
    //     return "Message must be at least 15 characters long.";
    // }
 
+   $maskedEmail = maskEmail($email);
+
     $sanitized_message = [
         "name" => htmlspecialchars($name),
-        "email" => htmlspecialchars($email),
+        "email" => htmlspecialchars($maskedEmail),
         "rating"=> (int)$rating,
         "message" => htmlspecialchars($message),
     ];
+
+    
 
     if (filesize("messages.json") == 0) {
         $data_to_save = [$sanitized_message];
@@ -47,5 +51,17 @@ function getMessages() {
         return [];
     }
     return array_reverse(json_decode(file_get_contents("messages.json"), true));
+}
+
+function maskEmail($email){
+    $prefix = strpos($email, '@');
+    $sufix = substr($email, 0, $prefix);
+    $domainPart = substr($email, $prefix);
+
+    $maskedName =     substr($sufix, 0, 1) 
+                    . str_repeat('*', max(0, strlen($sufix) -2)) 
+                    . substr($sufix, -1);
+
+    return $maskedName . $domainPart;
 }
 ?>
