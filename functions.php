@@ -14,9 +14,9 @@ function storeMessage($name, $email, $rating, $message) {
         return "Rating must be a number between 1 and 5.";
     }
 
-    if (mb_strlen(trim($message), 'UTF-8') < 15) {
-        return "Message must be at least 15 characters long.";
-    }
+   // if (mb_strlen(trim($message), 'UTF-8') < 15) {
+   //     return "Message must be at least 15 characters long.";
+   // }
 
     $sanitized_message = [
         "name" => htmlspecialchars($name),
@@ -38,7 +38,7 @@ function storeMessage($name, $email, $rating, $message) {
     if (!file_put_contents("messages.json", $encoded_data, LOCK_EX)) {
         return "Error storing message.";
     } else {
-        return "success";
+        return "success";   
     }
 }
 
