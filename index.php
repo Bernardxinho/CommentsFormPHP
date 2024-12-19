@@ -9,6 +9,8 @@
             unset($_POST);
         }
     }
+
+    $messages = getMessages();
 ?>
 
 <!DOCTYPE html>
@@ -16,6 +18,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="style.css">
     <title>Storing messages</title>
 </head>
 <body>
@@ -35,7 +38,7 @@
     <label>Enter your message</label>
     <textarea name="message"><?php echo @$_POST['message'] ?></textarea>
 
-    <input type="submit" name="submit" value="Submit">
+    <input class="buttonSubmit" type="submit" name="submit" value="Submit">
 
     <?php
         if ($response == "success") {
@@ -45,6 +48,18 @@
         }
     ?>
 </form>
+
+<h3>Messages</h3>
+<div class="messages">
+    <?php foreach ($messages as $msg): ?>
+        <div class="message">
+            <p><strong>Name:</strong> <?php echo htmlspecialchars($msg['name']); ?></p>
+            <p><strong>Email:</strong> <?php echo htmlspecialchars($msg['email']); ?></p>
+            <p><strong>Rating:</strong> <?php echo str_repeat('*', $msg['rating']); ?></p>
+            <p><strong>Message:</strong> <?php echo nl2br(htmlspecialchars($msg['message'])); ?></p>
+        </div>
+    <?php endforeach; ?>
+</div>
 
 </body>
 </html>
