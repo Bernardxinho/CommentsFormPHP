@@ -18,31 +18,37 @@ function storeMessage($name, $email, $rating, $message) {
    //     return "Message must be at least 15 characters long.";
    // }
 
-   $maskedEmail = maskEmail($email);
+    $maskedEmail = maskEmail($email);
+    $maskedName = maskName($name);
 
     $sanitized_message = [
-        "name" => htmlspecialchars($name),
+        "name" => htmlspecialchars($maskedName),
         "email" => htmlspecialchars($maskedEmail),
-        "rating"=> (int)$rating,
+        "rating" => (int)$rating,
         "message" => htmlspecialchars($message),
     ];
 
-    
-
-    if (filesize("messages.json") == 0) {
-        $data_to_save = [$sanitized_message];
-    } else {
-        $old_records = json_decode(file_get_contents("messages.json"), true);
-        array_push($old_records, $sanitized_message);
-        $data_to_save = $old_records;
+    $existing_messages = [];
+    if (filesize("messages.json") > 0) {
+        $existing_messages = json_decode(file_get_contents("messages.json"), true);
     }
 
-    $encoded_data = json_encode($data_to_save, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
+    foreach ($existing_messages as $existing_message) {
+        if ($existing_message['name'] === $sanitized_message['name'] &&
+            $existing_message['email'] === $sanitized_message['email'] &&
+            $existing_message['message'] === $sanitized_message['message']) {
+                return "";
+        }
+    }
+
+    array_push($existing_messages, $sanitized_message);
+
+    $encoded_data = json_encode($existing_messages, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
     if (!file_put_contents("messages.json", $encoded_data, LOCK_EX)) {
         return "Error storing message.";
     } else {
-        return "success";   
+        return "success";
     }
 }
 
@@ -64,4 +70,18 @@ function maskEmail($email){
 
     return $maskedName . $domainPart;
 }
+
+function maskName($name) {
+    $name_parts = explode(' ', $name);
+    
+    $first_name = $name_parts[0];
+    $masked_first_name = substr($first_name, 0, 1) 
+                        . str_repeat('*', max(0, strlen($first_name)));
+
+    $last_name = $name_parts[1];
+    $masked_last_name = substr($last_name, 0, 1) 
+                       . str_repeat('*', max(0, strlen($last_name)));
+    return $masked_first_name . ' ' . $masked_last_name;
+}
+
 ?>
