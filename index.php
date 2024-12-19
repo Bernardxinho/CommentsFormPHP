@@ -1,16 +1,15 @@
 <?php
-    require("functions.php")
+    require("functions.php");
 
     $response = null;
 
-    if(isset($_POST['submit'])){
-        $response = storeMessage($_POST['name'],$_POST['email'], $_POST['subject'], $_POST['message']);
-        if($repsonse == "success"){
+    if (isset($_POST['submit'])) {
+        $response = storeMessage($_POST['name'], $_POST['email'], $_POST['rating'], $_POST['message']);
+        if ($response == "success") {
             unset($_POST);
         }
     }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -22,42 +21,30 @@
 <body>
 
 <form action="" method="post">
+    <h3>Contact us</h3>
 
-   <h3>Contact us</h3>
+    <label>Name</label>
+    <input type="text" name="name" value="<?php echo @$_POST['name'] ?>">
 
-   <label>Name</label>
-   <input type="text" name="name" value="<?php echo @$_POST['name']?>">
+    <label>Enter your email</label>
+    <input type="email" name="email" value="<?php echo @$_POST['email'] ?>">
 
-   <label>Enter your email</label>
-   <input type="email" name="email" value="<?php echo @$_POST['email']?>">
- 
-   <label>Rating</label>
-    <input type="number" name="rating" min="1" max="5" value="<?php echo @$_POST['rating']?>"> 
+    <label>Rating</label>
+    <input type="number" name="rating" min="1" max="5" value="<?php echo @$_POST['rating'] ?>">
 
-   <label>Enter your message</label>
-   <textarea name="message"><?php echo @$_POST['message']?></textarea>
- 
-   <input type="submit" name="submit" value="Submit">
+    <label>Enter your message</label>
+    <textarea name="message"><?php echo @$_POST['message'] ?></textarea>
 
+    <input type="submit" name="submit" value="Submit">
 
-   <?php
-        if($response == "success"){
-            ?>
-                <p class="success">Success!</p>
-            <?php
-
-        }else{
-            ?>
-                <p class="error"><?php echo$response ?></p>
-            <?php
+    <?php
+        if ($response == "success") {
+            echo '<p class="success">Success!</p>';
+        } elseif ($response) {
+            echo '<p class="error">' . $response . '</p>';
         }
-   ?>
-
+    ?>
 </form>
 
 </body>
 </html>
-
-
-
-
